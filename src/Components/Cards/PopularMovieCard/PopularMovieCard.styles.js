@@ -31,6 +31,7 @@ export default StyleSheet.create({
     fontSize: 20,
     backgroundColor: '#000000c0',
     alignSelf: 'flex-start',
+    fontFamily: 'OpenSans-Medium',
   },
   rating_container: {
     flexDirection: 'row',

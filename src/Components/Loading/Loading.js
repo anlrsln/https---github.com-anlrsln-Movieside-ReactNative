@@ -6,7 +6,7 @@ import Theme from '../../Assets/Theme';
 const Loading = () => (
   <View style={{flex: 1, backgroundColor: Theme.main}}>
     <AnimatedLottieView
-      source={require('../../Assets/loading.json')}
+      source={require('../../Assets/lottie/loading.json')}
       autoPlay
     />
   </View>

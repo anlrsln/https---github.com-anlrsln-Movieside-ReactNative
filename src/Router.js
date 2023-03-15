@@ -6,8 +6,8 @@ import MainPage from './Pages/Main';
 import SearchPage from './Pages/Search';
 import ProfilePage from './Pages/Profile';
 import LoginPage from './Pages/Login';
-import PopularMovies from './Pages/PopularMovies';
-import RecentMovies from './Pages/RecentMovies';
+import MoviesListPage from './Pages/MovieList/MoviesListPage';
+import DetailPage from './Pages/Detail';
 import Theme from './Assets/Theme';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useSelector} from 'react-redux';
@@ -17,10 +17,25 @@ const Tab = createBottomTabNavigator();
 
 const MainPageStack = () => {
   return (
-    <Stack.Navigator screenOptions={{headerShown: false}}>
-      <Stack.Screen name="MainPage" component={MainPage} />
-      <Stack.Screen name="PopularMovies" component={PopularMovies} />
-      <Stack.Screen name="RecentMovies" component={RecentMovies} />
+    <Stack.Navigator>
+      <Stack.Screen
+        options={{headerShown: false}}
+        name="MainPage"
+        component={MainPage}
+      />
+      <Stack.Screen
+        options={({route}) => ({
+          title: setHeaderTitle(route.params),
+          ...headerStyle,
+        })}
+        name="MoviesListPage"
+        component={MoviesListPage}
+      />
+      <Stack.Screen
+        name="DetailPage"
+        component={DetailPage}
+        options={{...headerStyle}}
+      />
     </Stack.Navigator>
   );
 };
@@ -79,6 +94,7 @@ const Router = () => {
   );
 };
 
+// Tab Navigation iconlarını set eden ve tıklandığı durumda rengini değiştiren fonksiyon
 function handleTabBarIcons(focused, iconName) {
   return (
     <Icon
@@ -89,10 +105,47 @@ function handleTabBarIcons(focused, iconName) {
   );
 }
 
+// MoviesListPages sayfasına navigate edilen yere göre headerTitle ayarlayan fonksiyon (Recent Movies - See More,
+// Disney,Marvel,vb)
+function setHeaderTitle(params) {
+  const {name, companyIndex} = params;
+  switch (name) {
+    case 'POPULAR':
+      return 'Popular Movies';
+    case 'RECENT':
+      return 'Recent Movies';
+    case 'LIST': {
+      switch (companyIndex) {
+        case 0:
+          return 'Disney';
+        case 1:
+          return 'Pixar';
+        case 2:
+          return 'Marvel';
+        case 3:
+          return 'Star Wars';
+      }
+    }
+    default:
+      return;
+  }
+}
+
 const tabBarStyle = {
   backgroundColor: Theme.tabBarColor,
   height: 60,
   borderTopColor: Theme.main,
+};
+
+const headerStyle = {
+  headerStyle: {
+    backgroundColor: Theme.cardColor,
+  },
+  headerTitleStyle: {
+    color: 'white',
+    fontFamily: 'OpenSans-Bold',
+  },
+  headerTitleAlign: 'center',
 };
 
 export default Router;

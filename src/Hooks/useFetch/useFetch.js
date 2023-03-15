@@ -1,19 +1,19 @@
-import {useState} from 'react';
+import {useReducer} from 'react';
 import axios from 'axios';
+import reducer from '../Reducer/reducer';
+import initialState from '../States/initialState';
 
 const useFetch = () => {
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const {loading, error, data} = state;
 
   const getData = async url => {
+    dispatch({type: 'FETCH_START'});
     try {
-      setLoading(true);
       const {data: responseData} = await axios.get(url);
-      setData(responseData);
-      setLoading(false);
+      dispatch({type: 'FETCH_SUCCESS', payload: responseData});
     } catch (err) {
-      setError(err.message);
+      dispatch({type: 'FETCH_ERROR', payload: 'ERROR FETCHING DATA'});
     }
   };
   return {loading, error, data, getData};

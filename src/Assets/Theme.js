@@ -1,4 +1,5 @@
 export default {
-  main: '#37474f',
-  tabBarColor: '#455a64',
+  main: '#263238',
+  tabBarColor: '#37474f',
+  cardColor: '#1F2937',
 };

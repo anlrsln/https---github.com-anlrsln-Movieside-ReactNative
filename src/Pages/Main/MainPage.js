@@ -1,19 +1,27 @@
 import React, {useEffect} from 'react';
-import {Text, View, FlatList, ScrollView} from 'react-native';
+import {Text, View, FlatList, ScrollView, Image} from 'react-native';
 import styles from './MainPage.style';
 import useFetch from '../../Hooks/useFetch';
 import Loading from '../../Components/Loading';
-import RecentMovieCard from '../../Components/Cards/RecentMovieCard';
+import RecentMovieCard from '../../Components/Cards/MovieCard';
 import apiUrls from '../../Constants/ApiUrls';
 import PopularMovieCard from '../../Components/Cards/PopularMovieCard';
 import {useDispatch, useSelector} from 'react-redux';
 import {setGenres} from '../../Redux/Features/Genres/GenreSlice';
+import MainRecentCard from '../../Components/Cards/MainRecentCard';
+import LogoCard from '../../Components/Cards/LogoCard';
 
 let page = 1;
 
 const MainPage = ({navigation}) => {
   const dispatch = useDispatch();
   const {genres} = useSelector(s => s.genres);
+  const logoArray = [
+    require('../../Assets/logos/disney_logo.png'),
+    require('../../Assets/logos/pixar_logo.png'),
+    require('../../Assets/logos/marvel_logo.png'),
+    require('../../Assets/logos/star_wars.png'),
+  ];
 
   const {
     loading: recentLoading,
@@ -56,60 +64,77 @@ const MainPage = ({navigation}) => {
 
   function renderRecentMovies({item}) {
     return (
-      <RecentMovieCard
+      <MainRecentCard
         image={item.poster_path}
-        title={item.title}
-        release_date={item.release_date}
-        rating={item.vote_average}
-        genre_ids={item.genre_ids}
+        handleDetailPageNavigate={() => handleDetailPageNavigate(item)}
       />
     );
   }
 
+  // Popular Movies'i renderlayan fonksiyon
   function renderPopularMovies({item}) {
     return (
       <PopularMovieCard
         image={item.backdrop_path}
         title={item.original_title}
         rating={item.vote_average}
+        handleDetailPageNavigate={() => handleDetailPageNavigate(item)}
       />
     );
   }
 
-  function renderGenres({item}) {
+  function renderGenres({item, index}) {
     return (
-      <Text style={{marginRight: 10, fontSize: 15, color: 'white'}}>
-        {item.name}
-      </Text>
+      <LogoCard source={item} navigation={navigation} companyIndex={index} />
     );
+  }
+
+  // Filmleri listelemek için MovieListPage sayfasına yönlendiren fonksiyon. type, hangi API'ye istek atmak istediğimizi
+  // belirttiğimiz parametre. companyIndex, initial olarak null. companyIndex'i kullanmak istediğimiz yer, ana sayfadaki yapım şirket'
+  // lerinin (disney,marvel) hangisinin üzerine tıklandığını anlamak için index numarası belirttik. Bu sayede yine
+  // MovieListPage sayfasına gidecek ancak index değerine göre API'ye istek atacak.
+  function handleMoviesListNavigate(type) {
+    navigation.navigate('MoviesListPage', {
+      name: type,
+    });
+  }
+
+  function handleDetailPageNavigate(item) {
+    navigation.navigate('DetailPage', {item: item});
   }
 
   return (
     <ScrollView>
       <View style={styles.container}>
         <View style={styles.header}>
-          <Text style={styles.header_title}>MOVIESIDE</Text>
+          <Image
+            source={require('../../Assets/images/disney.png')}
+            style={styles.logo}
+          />
         </View>
         <View style={styles.popular_movies_container}>
           <View style={styles.popular_movies_title_container}>
             <Text style={styles.popular_movies_title}>Popular Movies</Text>
-            <Text style={styles.popular_movies_see_more}>See More..</Text>
+            <Text
+              style={styles.popular_movies_see_more}
+              onPress={() => handleMoviesListNavigate('POPULAR')}>
+              See More..
+            </Text>
           </View>
           <FlatList
             data={popularMoviesData.results}
             renderItem={renderPopularMovies}
             horizontal
-            keyExtractor={item => item.id}
+            keyExtractor={item => item.id.toString()}
             showsHorizontalScrollIndicator={false}
             pagingEnabled
           />
         </View>
-        <View style={styles.categories_container}>
+        <View style={styles.logo_container}>
           <FlatList
-            data={genreData.genres}
+            data={logoArray}
             renderItem={renderGenres}
             horizontal
-            keyExtractor={item => item.id}
             showsHorizontalScrollIndicator={false}
           />
         </View>
@@ -118,7 +143,7 @@ const MainPage = ({navigation}) => {
             <Text style={styles.popular_movies_title}>Recent Movies</Text>
             <Text
               style={styles.popular_movies_see_more}
-              onPress={() => navigation.navigate('RecentMovies')}>
+              onPress={() => handleMoviesListNavigate('RECENT')}>
               See More..
             </Text>
           </View>
@@ -126,7 +151,8 @@ const MainPage = ({navigation}) => {
             data={recentMoviesData.results}
             renderItem={renderRecentMovies}
             keyExtractor={item => item.id}
-            scrollEnabled={false}
+            showsHorizontalScrollIndicator={false}
+            horizontal
           />
         </View>
       </View>

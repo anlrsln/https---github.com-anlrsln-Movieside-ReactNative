@@ -35,7 +35,7 @@ const LoginPage = ({navigation}) => {
     <View style={styles.container}>
       <ImageBackground
         style={styles.imagebackground}
-        source={require('../../Assets/login.png')}>
+        source={require('../../Assets/images/login.png')}>
         <View style={styles.header_container}></View>
         <Form
           styles={styles.body_container}

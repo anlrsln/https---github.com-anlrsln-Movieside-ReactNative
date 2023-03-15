@@ -2,7 +2,9 @@ import {Dimensions, StyleSheet} from 'react-native';
 
 export default StyleSheet.create({
   container: {
+    flex: 1,
     flexDirection: 'row',
+    margin: 10,
   },
   image: {
     margin: 10,
@@ -11,15 +13,8 @@ export default StyleSheet.create({
     resizeMode: 'cover',
     borderRadius: 15,
   },
-  body_container: {
-    justifyContent: 'space-around',
+  elevation: {
+    shadowColor: '#52006A',
+    elevation: 20,
   },
-  title: {
-    fontSize: 20,
-    color: 'white',
-  },
-  release_date_container: {},
-  release_date: {},
-  rating_container: {},
-  rating: {},
 });
