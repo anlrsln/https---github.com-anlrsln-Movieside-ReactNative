@@ -31,7 +31,11 @@ const Form = ({styles, loading, handleLogin}) => {
                 isSecure
               />
               <ErrorMessage errorValue={touched.password && errors.password} />
-              <LoginButton onClick={handleSubmit} loading={loading} />
+              <LoginButton
+                onClick={handleSubmit}
+                loading={loading}
+                buttonTitle={'Sign In'}
+              />
             </View>
           </KeyboardAwareScrollView>
         );

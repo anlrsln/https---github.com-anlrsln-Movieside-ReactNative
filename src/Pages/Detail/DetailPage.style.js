@@ -8,7 +8,10 @@ const h1 = {
   fontSize: 23,
 };
 
-const p1 = {};
+const textCommons = {
+  color: 'white',
+  fontFamily: 'OpenSans-Regular',
+};
 
 export default StyleSheet.create({
   container: {
@@ -57,8 +60,7 @@ export default StyleSheet.create({
     marginRight: 4,
   },
   rating: {
-    color: 'white',
-    fontFamily: 'OpenSans-Regular',
+    ...textCommons,
     fontSize: 15,
   },
   genre_container: {
@@ -68,9 +70,7 @@ export default StyleSheet.create({
     marginTop: 20,
   },
   genres: {
-    //flex: 1,
-    color: 'white',
-    fontFamily: 'OpenSans-Regular',
+    ...textCommons,
     fontSize: 13,
   },
   media_type: {
@@ -93,9 +93,8 @@ export default StyleSheet.create({
     marginBottom: 15,
   },
   description: {
-    color: 'white',
+    ...textCommons,
     fontSize: 18,
-    fontFamily: 'OpenSans-Regular',
     lineHeight: 29,
   },
 

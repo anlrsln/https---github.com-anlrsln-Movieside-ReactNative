@@ -6,4 +6,7 @@ export default StyleSheet.create({
     flex: 1,
     backgroundColor: theme.main,
   },
+  body_container: {
+    flex: 1,
+  },
 });

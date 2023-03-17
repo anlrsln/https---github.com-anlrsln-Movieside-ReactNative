@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, View, ImageBackground} from 'react-native';
+import {Text, View, ImageBackground, Image} from 'react-native';
 import styles from './LoginPage.style';
 import Form from '../../Components/Form/Form';
 import usePost from '../../Hooks/usePost';
@@ -36,7 +36,12 @@ const LoginPage = ({navigation}) => {
       <ImageBackground
         style={styles.imagebackground}
         source={require('../../Assets/images/login.png')}>
-        <View style={styles.header_container}></View>
+        <View style={styles.header_container}>
+          <Image
+            style={styles.logo}
+            source={require('../../Assets/images/disney.png')}
+          />
+        </View>
         <Form
           styles={styles.body_container}
           loading={loading}

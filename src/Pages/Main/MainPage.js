@@ -3,19 +3,29 @@ import {Text, View, FlatList, ScrollView, Image} from 'react-native';
 import styles from './MainPage.style';
 import useFetch from '../../Hooks/useFetch';
 import Loading from '../../Components/Loading';
-import RecentMovieCard from '../../Components/Cards/MovieCard';
-import apiUrls from '../../Constants/ApiUrls';
+import Config from 'react-native-config';
 import PopularMovieCard from '../../Components/Cards/PopularMovieCard';
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
 import {setGenres} from '../../Redux/Features/Genres/GenreSlice';
 import MainRecentCard from '../../Components/Cards/MainRecentCard';
 import LogoCard from '../../Components/Cards/LogoCard';
+import useFetchMovies from '../../Hooks/useFetchMovies';
 
 let page = 1;
+const urls = {
+  popular_movies_url: `${
+    Config.BASE_MOVIE_API_URL + Config.POPULARS_ENDPOINT + Config.MOVIE_API_KEY
+  }&page=${page}`,
+  recent_movies_url: `${
+    Config.BASE_MOVIE_API_URL + Config.RECENT_ENDPOINT + Config.MOVIE_API_KEY
+  }&page=${page}`,
+  genres_url: `${
+    Config.BASE_MOVIE_API_URL + Config.GENRES_ENDPOINT + Config.MOVIE_API_KEY
+  }`,
+};
 
 const MainPage = ({navigation}) => {
   const dispatch = useDispatch();
-  const {genres} = useSelector(s => s.genres);
   const logoArray = [
     require('../../Assets/logos/disney_logo.png'),
     require('../../Assets/logos/pixar_logo.png'),
@@ -27,15 +37,15 @@ const MainPage = ({navigation}) => {
     loading: recentLoading,
     data: recentMoviesData,
     error: recentError,
-    getData: getRecentMoviesData,
-  } = useFetch();
+    getMovies: getRecentMoviesData,
+  } = useFetchMovies();
 
   const {
     loading: popularLoading,
     data: popularMoviesData,
     error: popularError,
-    getData: getPopularMoviesData,
-  } = useFetch();
+    getMovies: getPopularMoviesData,
+  } = useFetchMovies();
 
   const {
     loading: genreLoading,
@@ -45,9 +55,9 @@ const MainPage = ({navigation}) => {
   } = useFetch();
 
   useEffect(() => {
-    getRecentMoviesData(`${apiUrls.recentMoviesUrl}&page=${page}`);
-    getPopularMoviesData(`${apiUrls.popularMoviesUrl}&page=${page}`);
-    getGenreData(`${apiUrls.genresUrl}`);
+    getRecentMoviesData(urls.recent_movies_url, page);
+    getPopularMoviesData(urls.popular_movies_url, page);
+    getGenreData(urls.genres_url);
   }, []);
 
   if (recentLoading || popularLoading || genreLoading) {
@@ -90,9 +100,7 @@ const MainPage = ({navigation}) => {
   }
 
   // Filmleri listelemek için MovieListPage sayfasına yönlendiren fonksiyon. type, hangi API'ye istek atmak istediğimizi
-  // belirttiğimiz parametre. companyIndex, initial olarak null. companyIndex'i kullanmak istediğimiz yer, ana sayfadaki yapım şirket'
-  // lerinin (disney,marvel) hangisinin üzerine tıklandığını anlamak için index numarası belirttik. Bu sayede yine
-  // MovieListPage sayfasına gidecek ancak index değerine göre API'ye istek atacak.
+  // belirttiğimiz parametre. companyIndex, initial olarak null.
   function handleMoviesListNavigate(type) {
     navigation.navigate('MoviesListPage', {
       name: type,
@@ -122,7 +130,7 @@ const MainPage = ({navigation}) => {
             </Text>
           </View>
           <FlatList
-            data={popularMoviesData.results}
+            data={popularMoviesData}
             renderItem={renderPopularMovies}
             horizontal
             keyExtractor={item => item.id.toString()}
@@ -148,7 +156,7 @@ const MainPage = ({navigation}) => {
             </Text>
           </View>
           <FlatList
-            data={recentMoviesData.results}
+            data={recentMoviesData}
             renderItem={renderRecentMovies}
             keyExtractor={item => item.id}
             showsHorizontalScrollIndicator={false}

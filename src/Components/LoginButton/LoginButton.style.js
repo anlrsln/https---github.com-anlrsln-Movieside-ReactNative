@@ -12,6 +12,6 @@ export default StyleSheet.create({
   button_text: {
     fontSize: 20,
     color: 'white',
-    fontWeight: 'bold',
+    fontFamily: 'OpenSans-Bold',
   },
 });

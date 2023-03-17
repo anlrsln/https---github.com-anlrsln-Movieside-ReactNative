@@ -15,16 +15,11 @@ const AuthProvider = () => {
         dispatch(setUser(JSON.parse(response)));
       }
     });
-    dispatch(setLoading(false));
   }
 
   useEffect(() => {
     getUser();
   }, []);
-
-  if (user.token) {
-    dispatch(setLoading(false));
-  }
 
   return loading ? <Loading /> : <Router />;
 };

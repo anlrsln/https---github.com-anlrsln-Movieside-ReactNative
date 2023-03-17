@@ -8,8 +8,9 @@ import FooterIndicator from '../../Components/Indicators/FooterIndicator';
 import Config from 'react-native-config';
 
 const MoviesListPage = ({navigation, route}) => {
-  const {loading, data, error, getMovies} = useFetchMovies();
+  const {loading, data, error, totalPages, getMovies} = useFetchMovies();
   const [page, setPage] = useState(1);
+  const [footer, setFooter] = useState(true);
   const {name, companyIndex} = route.params;
 
   useEffect(() => {
@@ -19,7 +20,8 @@ const MoviesListPage = ({navigation, route}) => {
   // Liste sonuna geldiğinde page 1 artar ve API'de bir sonraki sayfaya istek atılır,dönen veriler
   // data listesine eklenir
   function getMoreMovies() {
-    setPage(page + 1);
+    if (page < totalPages) setPage(page + 1);
+    else setFooter(false);
   }
 
   if (loading) {
@@ -95,7 +97,7 @@ const MoviesListPage = ({navigation, route}) => {
         renderItem={renderRecentMovies}
         keyExtractor={item => item.id.toString()}
         onEndReached={getMoreMovies}
-        ListFooterComponent={FooterIndicator}
+        ListFooterComponent={footer ? FooterIndicator : false}
         showsVerticalScrollIndicator={false}
         maxToRenderPerBatch={10}
       />

@@ -11,6 +11,7 @@ import DetailPage from './Pages/Detail';
 import Theme from './Assets/Theme';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useSelector} from 'react-redux';
+import Loading from './Components/Loading';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -34,7 +35,24 @@ const MainPageStack = () => {
       <Stack.Screen
         name="DetailPage"
         component={DetailPage}
-        options={{...headerStyle}}
+        options={{...headerStyle, headerTitle: ''}}
+      />
+    </Stack.Navigator>
+  );
+};
+
+const SearchStack = () => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="SearchPage"
+        component={SearchPage}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="DetailPage"
+        component={DetailPage}
+        options={{...headerStyle, headerTitle: ''}}
       />
     </Stack.Navigator>
   );
@@ -59,7 +77,7 @@ const TabScreens = () => {
       />
       <Tab.Screen
         name="Search"
-        component={SearchPage}
+        component={SearchStack}
         options={{
           tabBarIcon: ({focused}) => handleTabBarIcons(focused, 'magnify'),
         }}
@@ -77,11 +95,15 @@ const TabScreens = () => {
 };
 
 const Router = () => {
-  const {user} = useSelector(s => s.auth);
+  const {user, loading} = useSelector(s => s.auth);
+
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
     <NavigationContainer>
-      {!user.token ? (
+      {!Object.keys(user).length ? (
         <Stack.Navigator screenOptions={{headerShown: false}}>
           <Stack.Screen name="LoginScreen" component={LoginPage} />
         </Stack.Navigator>
